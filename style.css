@@ -42,14 +42,9 @@ body{
 
 .building-bg{
   position:absolute;
-
   right:0;
   top:0;
-
   height:100%;
-
-  opacity:.08;
-
   pointer-events:none;
 }
 
