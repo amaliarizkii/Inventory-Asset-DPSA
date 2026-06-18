@@ -1,3 +1,21 @@
+const SHEET_ID =
+"1csqVJgZhmLnA0pCo-TQPKNXe2jg-wVijiGuryEfD10o";
+
+const SHEET_NAME =
+"DATABASE";
+
+const API_URL =
+`https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
+
+const card =
+document.getElementById("card");
+
+const params =
+new URLSearchParams(window.location.search);
+
+const kode =
+params.get("kode");
+
 async function loadData(){
 
   try{
@@ -8,113 +26,152 @@ async function loadData(){
     const data =
     await response.json();
 
-    console.log(data);
-
-    // ambil parameter kode dari URL
-    const params =
-    new URLSearchParams(window.location.search);
-
-    const kode =
-    params.get("kode");
-
     let asset;
 
-    // cari berdasarkan kode barang
     if(kode){
 
       asset = data.find(item =>
-        item["Kode Barang"]?.trim() === kode.trim()
+        item["Kode Barang"] === kode
       );
 
     }else{
 
-      // default tampil data pertama
       asset = data[0];
     }
 
-    // jika asset tidak ditemukan
     if(!asset){
 
-      card.innerHTML = `
-        <div style="color:red;text-align:center;">
-          Asset tidak ditemukan
-        </div>
-      `;
+      card.innerHTML =
+      `<div class="error">
+        Asset tidak ditemukan
+      </div>`;
 
       return;
     }
 
-    console.log("ASSET:", asset);
+    let imageUrl =
+    asset["Link Gambar"] || "";
 
-    // gambar
-    const imageUrl =
-    asset["Link Gambar"] ||
-    "assets/no-image.png";
+    if(
+      imageUrl.includes(
+        "drive.google.com/file/d/"
+      )
+    ){
 
-card.innerHTML = `
+      const match =
+      imageUrl.match(
+        /\/d\/([^\/]+)/
+      );
 
-<div class="asset-layout">
+      if(match){
 
-  <img
-    class="asset-image"
-    src="${imageUrl}"
-    alt="Asset Image"
-    onerror="this.src='assets/no image.png'"
-  >
+        const fileId =
+        match[1];
 
-  <div class="asset-info">
+        imageUrl =
+        `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`;
+      }
+    }
 
-    <div class="label">
-      Nama Barang
-    </div>
+    card.innerHTML = `
 
-    <div class="value">
-      ${asset["Nama Barang"] || "-"}
-    </div>
+      <div class="asset-container">
 
-    <div class="label">
-      Kode Barang
-    </div>
+        <div class="asset-photo">
 
-    <div class="value asset-code">
-      ${asset["Kode Barang"] || "-"}
-    </div>
+          <img
+            src="${imageUrl}"
+            alt="Asset Image"
+            onerror="this.src='no image.png'"
+          >
 
-    <div class="label">
-      Tipe / Ukuran
-    </div>
+        </div>
 
-    <div class="value">
-      ${asset["Tipe/Ukuran"] || "-"}
-    </div>
+        <div class="asset-detail">
 
-    <div class="label">
-      Lokasi
-    </div>
+          <div class="info-row">
+            <div class="icon">📦</div>
 
-    <div class="value">
-      ${asset["Lokasi"] || "-"}
-    </div>
+            <div class="info-content">
+              <span>Nama Barang</span>
+              <h3>${asset["Nama Barang"] || "-"}</h3>
+            </div>
+          </div>
 
-    <div class="label">
-      Keterangan
-    </div>
+          <div class="info-row">
+            <div class="icon">🏷️</div>
 
-    <div class="value">
-      ${asset["Keterangan (Letak)"] || "-"}
-    </div>
+            <div class="info-content">
+              <span>Kode Barang</span>
 
-    <div class="label">
-      Kondisi Asset
-    </div>
+              <h3 class="asset-code">
+                ${asset["Kode Barang"] || "-"}
+              </h3>
+            </div>
+          </div>
 
-    <div class="status">
-      ${asset["Kondisi Aset"] || "-"}
-    </div>
+          <div class="info-row">
+            <div class="icon">🖥️</div>
 
-  </div>
+            <div class="info-content">
+              <span>Tipe / Ukuran</span>
 
-</div>
+              <h3>
+                ${asset["Tipe/Ukuran"] || "-"}
+              </h3>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="icon">📍</div>
+
+            <div class="info-content">
+              <span>Lokasi</span>
+
+              <h3>
+                ${asset["Lokasi"] || "-"}
+              </h3>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="icon">👤</div>
+
+            <div class="info-content">
+              <span>Keterangan</span>
+
+              <h3>
+                ${asset["Keterangan (Letak)"] || "-"}
+              </h3>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="icon">📋</div>
+
+            <div class="info-content">
+              <span>Kondisi Asset</span>
+
+              <div class="status">
+                ● ${asset["Kondisi Aset"] || "-"}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <img
+          src="building-lineart.png"
+          class="bg-building"
+        >
+
+        <img
+          src="plant-lineart.png"
+          class="bg-plant"
+        >
+
+      </div>
+
     `;
 
   }catch(error){
@@ -122,7 +179,9 @@ card.innerHTML = `
     console.log(error);
 
     card.innerHTML =
-    "ERROR mengambil data";
+    `<div class="error">
+      ERROR mengambil data
+    </div>`;
   }
 
 }
