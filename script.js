@@ -161,11 +161,6 @@ async function loadData(){
         </div>
 
         <img
-          src="building-lineart.png"
-          class="bg-building"
-        >
-
-        <img
           src="plant-lineart.png"
           class="bg-plant"
         >
