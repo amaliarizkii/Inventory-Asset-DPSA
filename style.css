@@ -21,6 +21,7 @@ body{
 
 .header{
     position:relative;
+    overflow:hidden;
 
     width:100%;
     max-width:980px;
@@ -65,7 +66,7 @@ body{
 
 .building-bg{
     position:absolute;
-    right:-40px;
+    right:0px;
     top:0;
     height:100%;
     opacity:.9;
@@ -195,20 +196,92 @@ body{
 
 /* MOBILE */
 
-@media(max-width:768px){
+@media screen and (max-width:768px){
 
-  .asset-container{
-    grid-template-columns:1fr;
-  }
+    body{
+        padding:12px;
+    }
 
-  .asset-photo{
-    width:200px;
-    margin:auto;
-  }
+    .container{
+        width:100%;
+    }
 
-  .building-bg{
-    display:none;
-  }
+    .header{
+        width:100%;
+        padding:20px;
+        border-radius:20px;
+    }
+
+    .header-content{
+        flex-direction:column;
+        text-align:center;
+        gap:10px;
+    }
+
+    .building{
+
+    display:block;
+    position:absolute;
+    width:150px;
+    right:-15px;
+    top:15px;
+    opacity:1;
+    filter:brightness(1.4);
+    z-index:0;
+
+}
+
+    .logo{
+        width:55px;
+    }
+
+    .header h1{
+        font-size:30px;
+    }
+
+    .header p{
+        font-size:16px;
+    }
+
+    .card{
+        width:100%;
+        max-width:100%;
+        padding:18px;
+    }
+
+    .asset-container{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .asset-photo{
+        width:170px;
+        margin:auto;
+    }
+
+    .asset-detail{
+        width:100%;
+    }
+
+    .info-row{
+        gap:12px;
+        padding:14px 0;
+    }
+
+    .icon{
+        width:52px;
+        height:52px;
+        font-size:22px;
+        border-radius:14px;
+    }
+
+    .info-content span{
+        font-size:13px;
+    }
+
+    .info-content h3{
+        font-size:17px;
+    }
 
 }
 
