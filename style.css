@@ -66,7 +66,7 @@ body{
     right:-40px;
     top:0;
     height:100%;
-    opacity:.8;
+    opacity:.18;
     pointer-events:none;
 }
 .card{
@@ -165,7 +165,7 @@ body{
   top:0;
   width:450px;
   height:100%;
-  opacity:0.8;
+  opacity:0.5;
   pointer-events:none;
 
   filter:
