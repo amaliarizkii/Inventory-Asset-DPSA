@@ -53,6 +53,8 @@ body{
 .header h1{
   font-size:24px;
   font-weight:700;
+  display:flex;
+  align-items:left;
 }
 
 .header p{
