@@ -39,7 +39,7 @@ body{
 
 .header-content{
     display:flex;
-    align-items:left;
+    align-items:center;
     gap:18px;
 
     position:relative;
