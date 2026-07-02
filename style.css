@@ -21,7 +21,6 @@ body{
 
 .header{
     position:relative;
-    overflow:hidden;
 
     width:100%;
     max-width:980px;
@@ -219,17 +218,16 @@ body{
     }
 
     .building{
+      display:block;
+      position:absolute;
+      width:100px;
+      right:-15px;
+      top:15px;
+      opacity:.8;
+      filter:brightness(1.4);
+      z-index:0;
 
-    display:block;
-    position:absolute;
-    width:150px;
-    right:-15px;
-    top:15px;
-    opacity:1;
-    filter:brightness(1.4);
-    z-index:0;
-
-}
+    }
 
     .logo{
         width:55px;
