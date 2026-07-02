@@ -39,7 +39,7 @@ body{
 
 .header-content{
     display:flex;
-    align-items:center;
+    align-items:left;
     gap:18px;
 
     position:relative;
@@ -68,7 +68,7 @@ body{
     right:-40px;
     top:0;
     height:100%;
-    opacity:.18;
+    opacity:.5;
     pointer-events:none;
 }
 .card{
