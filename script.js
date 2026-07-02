@@ -147,16 +147,22 @@ async function loadData(){
           </div>
 
           <div class="info-row">
-            <div class="icon">📋</div>
 
-            <div class="info-content">
-              <span>Kondisi Asset</span>
+    <div class="icon">
+        📋
+    </div>
 
-              <div class="status">
-                ● ${asset["Kondisi Aset"] || "-"}
-              </div>
-            </div>
-          </div>
+    <div class="info-content">
+
+        <span>Kondisi Asset</span>
+
+        <h3 class="status-text">
+            ${asset["Kondisi Aset"] || "-"}
+        </h3>
+
+    </div>
+
+</div>
 
         </div>
 
