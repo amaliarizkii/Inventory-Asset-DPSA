@@ -106,7 +106,7 @@ body{
     max-height:260px;
     object-fit:contain;
     border-radius:18px;
-    background:white;
+    background:rgba(19,35,63,.95);
 }
 
 .asset-detail{
