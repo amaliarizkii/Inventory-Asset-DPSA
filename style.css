@@ -31,8 +31,8 @@ body{
     background:#13233f;
 
     display:flex;
-    justify-content:center;
-    align-items:center;
+    justify-content:left;
+    align-items:left;
 
     overflow:hidden;
 }
