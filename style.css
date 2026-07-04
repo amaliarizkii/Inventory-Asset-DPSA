@@ -251,7 +251,7 @@ body{
       }
       
      .building{
-      width:220px;
+      width:150px;
       left:50%;
       transform:translateX(-50%);
       bottom:-5px;
