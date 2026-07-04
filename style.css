@@ -126,7 +126,8 @@ body{
     width:100%;
     max-height:205px;
     object-fit:contain;
-    border-radius:18px;
+    border:2px solid #2ec3ff;
+    border-radius:16px;
 }
 
 .asset-detail{
@@ -212,84 +213,77 @@ body{
 /* MOBILE */
 
 @media screen and (max-width:768px){
-
-    body{
-        padding:12px;
-    }
-
-    .container{
-        width:100%;
-    }
-
-    .header{
-
-    max-width:100%;
-
-    height:78px;
-
-    border-radius:18px;
-
-    padding:0;
-    }
-    
-    .header-content{
-    
-        width:calc(100% - 110px);
-    
-        padding-left:18px;
-    
-        gap:10px;
-    
-        flex-direction:row;
-    }
-    
-    .logo{
-    
-        width:34px;
-    }
-    
-    .header h1{
-    
-        font-size:18px;
-    }
-    
-    .header p{
-    
-        font-size:13px;
-    }
-    
-    .building-bg{
-    
-        width:95px;
-    
-        right:0;
-    
-        opacity:.75;
-    }
+  
+      body{
+          padding:12px;
+      }
+  
+      .container{
+          width:100%;
+      }
+  
+      .header{
+  
+      max-width:100%;
+      height:78px;  
+      border-radius:18px;
+      padding:0;
+      }
+      
+      .header-content{
+      
+          width:calc(100% - 110px);      
+          padding-left:18px;      
+          gap:10px;      
+          flex-direction:row;
+      }
+      
+      .logo{      
+          width:34px;
+      }
+      
+      .header h1{      
+          font-size:18px;
+      }
+      
+      .header p{     
+          font-size:13px;
+      }
+      
+     .building{
+      width:220px;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:-5px;
+      opacity:.75;
+  }
 
     .card{
         width:100%;
         max-width:100%;
-        padding:18px;
+        padding:14px;
     }
 
     .asset-container{
         flex-direction:column;
-        gap:20px;
+        gap:10px;
     }
 
     .asset-photo{
         width:170px;
         margin:auto;
     }
-
+    .asset-photo img{
+        border:2px solid #2ec3ff;
+        border-radius:16px;
+    }
     .asset-detail{
         width:100%;
     }
 
     .info-row{
         gap:12px;
-        padding:14px 0;
+        padding:8px 0;
     }
 
     .icon{
@@ -300,11 +294,11 @@ body{
     }
 
     .info-content span{
-        font-size:14px;
+        font-size:12px;
     }
 
     .info-content h3{
-        font-size:14px;
+        font-size:18px;
     }
 
 }
