@@ -234,12 +234,12 @@ body{
       }
       
      .building{
-      width:150px;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:-5px;
-      opacity:.75;
-  }
+        width:120px;
+        left:50%;
+        transform:translateX(-50%);
+        bottom:-5px;
+        opacity:.75;
+    }
 
     .card{
         width:100%;
