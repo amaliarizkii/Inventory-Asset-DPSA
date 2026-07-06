@@ -181,93 +181,90 @@ body{
 
 @media screen and (max-width:768px){
   
-      body{
-          padding:12px;
-      }
+    body{
+      padding:12px;
+    }
   
-      .container{
-          width:100%;
-      }
+    .container{
+      width:100%;
+    }
   
-        .header{
-        max-width:100%;
-        height:95px;
-        border-radius:18px;
-        padding:0;
-        overflow:hidden;
+    .header{
+      max-width:100%;
+      height:95px;
+      border-radius:18px;
+      padding:0;
+      overflow:hidden;
     }
 
     .header-content{
-        width:calc(100% - 100px);
-        padding-left:16px;
-        gap:10px;
-        flex-direction:row;
-        z-index:2;
+      width:calc(100% - 100px);
+      padding-left:16px;
+      gap:10px;
+      flex-direction:row;
+      z-index:2;
     }
 
     .logo{
-        width:34px;
+      width:34px;
     }
 
     .header h1{
-        font-size:17px;
+      font-size:17px;
     }
 
     .header p{
-        font-size:11px;
-        white-space:nowrap;
+      font-size:11px;
+      white-space:nowrap;
     }
 
-    .building{
-        width:85px;
-        right:-8px;
-        left:auto;
-        transform:none;
-        bottom:0;
-        opacity:.7;
+    .building-bg{
+      width:85px;
+      right:-8px;
+      bottom:0;
+      opacity:.7;
     }
-
     .card{
-        width:100%;
-        max-width:100%;
-        padding:14px;
+      width:100%;
+      max-width:100%;
+      padding:14px;
     }
 
     .asset-container{
-        flex-direction:column;
-        gap:10px;
+      flex-direction:column;
+      gap:10px;
     }
 
     .asset-photo{
-        width:170px;
-        margin:auto;
+      width:170px;
+      margin:auto;
     }
     .asset-photo img{
-        border:2px solid #2ec3ff;
-        border-radius:16px;
+      border:2px solid #2ec3ff;
+      border-radius:16px;
     }
     .asset-detail{
-        width:100%;
+      width:100%;
     }
 
     .info-row{
-        gap:12px;
-        padding:8px 0;
+      gap:12px;
+      padding:8px 0;
     }
 
     .icon{
-        width:52px;
-        height:52px;
-        font-size:14px;
-        border-radius:14px;
+      width:52px;
+      height:52px;
+      font-size:14px;
+      border-radius:14px;
     }
 
     .info-content span{
-        font-size:12px;
+      font-size:12px;
     }
 
     .info-content h3{
-        font-size:18px;
+      font-size:18px;
     }
 
 }
