@@ -189,41 +189,49 @@ body{
       width:100%;
     }
   
-    .header{
-      max-width:100%;
-      height:95px;
-      border-radius:18px;
-      padding:0;
-      overflow:hidden;
-    }
+    @media screen and (max-width:768px){
 
-    .header-content{
-      width:calc(100% - 100px);
-      padding-left:16px;
-      gap:10px;
-      flex-direction:row;
-      z-index:2;
-    }
+  .header{
+    max-width:100%;
+    height:95px;
+    border-radius:18px;
+    overflow:hidden;
+  }
 
-    .logo{
-      width:34px;
-    }
+  .header-content{
+    width:calc(100% - 120px);
+    padding-left:16px;
+    gap:10px;
+    z-index:2;
+  }
 
-    .header h1{
-      font-size:17px;
-    }
+  .logo{
+    width:34px;
+  }
 
-    .header p{
-      font-size:11px;
-      white-space:nowrap;
-    }
+  .header h1{
+    font-size:17px;
+  }
 
-    .building-bg{
-      width:85px;
-      right:-8px;
-      bottom:0;
-      opacity:.7;
-    }
+  .header p{
+    font-size:11px;
+    white-space:nowrap;
+  }
+
+  .building-bg{
+    width:110px;          /* sedikit lebih besar */
+    position:absolute;    /* pastikan override */
+    right:-5px;
+
+    top:50%;              /* pindah ke tengah */
+    bottom:auto;          /* hapus posisi bawah */
+
+    transform:translateY(-50%);
+
+    opacity:.7;
+  }
+
+}
     .card{
       width:100%;
       max-width:100%;
