@@ -217,7 +217,7 @@ body{
     }
   
     .building-bg{
-      width:130px;          /* sedikit lebih besar */
+      width:145px;          /* sedikit lebih besar */
       position:absolute;    /* pastikan override */
       right:-5px;
   
