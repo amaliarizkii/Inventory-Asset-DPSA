@@ -65,7 +65,7 @@ body{
   position:absolute;
   right:-5px;
   bottom:0;
-  width:230px;
+  width:150px;
   opacity:.9;
   object-fit:contain;
   pointer-events:none;
