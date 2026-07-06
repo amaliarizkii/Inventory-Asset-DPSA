@@ -235,11 +235,12 @@ body{
     }
 
     .building{
-        width:95px;              /* sebelumnya 120px */
-        left:50%;
-        transform:translateX(-50%);
-        bottom:5px;              /* naik sedikit */
-        opacity:.55;             /* lebih soft */
+        width:105px;
+        right:-8px;
+        left:auto;
+        transform:none;
+        bottom:0;
+        opacity:.7;
     }
 
     .card{
