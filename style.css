@@ -161,22 +161,6 @@ body{
   font-size:14px;
 }
 
-.building{
-  position:absolute;
-  right:10px;
-  top:10px;
-  width:2000px;
-
-  opacity:1;
-
-  filter:
-    brightness(1.35)
-    contrast(1.15)
-    saturate(1.2);
-
-  pointer-events:none;
-}
-
 .bg-plant{
   position:absolute;
 
