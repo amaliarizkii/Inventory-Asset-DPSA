@@ -84,6 +84,7 @@ async function loadData(){
       .replace(/Storage\s*:/gi,"<br><b>Storage :</b> ")
       .replace(/SSD\s*:/gi,"<br><b>SSD :</b> ")
       .replace(/HDD\s*:/gi,"<br><b>HDD :</b> ")
+      .replace(/SN\s*:/gi,"<br><b>SN :</b> ")
       .replace(/Printer\s*:/gi,"<br><b>Printer :</b> ");
       
       card.innerHTML = `
