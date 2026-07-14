@@ -87,6 +87,7 @@ async function loadData(){
       .replace(/SN\s*:/gi,"<br><b>SN :</b> ")
       .replace(/Resolusi\s*:/gi,"<br><b>Resolusi :</b> ")
       .replace(/Dimensi\s*:/gi,"<br><b>Dimensi :</b> ")
+      .replace(/Ukuran\s*:/gi,"<br><b>Ukuran :</b> ")
       .replace(/Berat\s*:/gi,"<br><b>SN :</b> ")
       .replace(/Printer\s*:/gi,"<br><b>Printer :</b> ");
       
