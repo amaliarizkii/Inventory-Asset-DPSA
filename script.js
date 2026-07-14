@@ -73,7 +73,20 @@ async function loadData(){
       }
     }
 
-    card.innerHTML = `
+      // Rapikan data Tipe / Ukuran otomatis
+      let spec = asset["Tipe/Ukuran"] || "-";
+      
+      spec = spec
+      .replace(/Monitor\s*:/gi,"<b>Monitor :</b> ")
+      .replace(/Processor\s*:/gi,"<br><b>Processor :</b> ")
+      .replace(/CPU\s*:/gi,"<br><b>CPU :</b> ")
+      .replace(/RAM\s*:/gi,"<br><b>RAM :</b> ")
+      .replace(/Storage\s*:/gi,"<br><b>Storage :</b> ")
+      .replace(/SSD\s*:/gi,"<br><b>SSD :</b> ")
+      .replace(/HDD\s*:/gi,"<br><b>HDD :</b> ")
+      .replace(/Printer\s*:/gi,"<br><b>Printer :</b> ");
+      
+      card.innerHTML = `
 
       <div class="asset-container">
 
@@ -110,17 +123,20 @@ async function loadData(){
             </div>
           </div>
 
-          <div class="info-row">
-            <div class="icon">🖥️</div>
-
-            <div class="info-content">
-              <span>Tipe / Ukuran</span>
-
-              <h3>
-                ${asset["Tipe/Ukuran"] || "-"}
-              </h3>
-            </div>
+           <div class="info-row info-spec">
+  
+          <div class="icon">🖥️</div>
+        
+          <div class="info-content">
+            <span>Tipe / Ukuran</span>
+        
+            <h3>
+              ${spec}
+            </h3>
+        
           </div>
+        
+        </div>
 
           <div class="info-row">
             <div class="icon">📍</div>
