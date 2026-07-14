@@ -151,6 +151,25 @@ body{
   font-weight:600;
 }
 
+.info-spec{
+    align-items:flex-start;
+}
+
+.info-spec .info-content{
+    flex:1;
+}
+
+.info-spec h3{
+    font-size:15px;
+    line-height:1.6;
+    font-weight:600;
+}
+
+.info-spec h3 b{
+    color:#2ec3ff;
+    font-weight:700;
+}
+
 .asset-code{
   color:#2ec3ff;
 }
@@ -257,6 +276,11 @@ body{
       padding:8px 0;
     }
 
+    .info-spec h3{
+        font-size:14px;
+        line-height:1.5;
+    }
+  
     .icon{
       width:52px;
       height:52px;
