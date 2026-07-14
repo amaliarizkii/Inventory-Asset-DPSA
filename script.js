@@ -88,7 +88,7 @@ async function loadData(){
       .replace(/Resolusi\s*:/gi,"<br><b>Resolusi :</b> ")
       .replace(/Dimensi\s*:/gi,"<br><b>Dimensi :</b> ")
       .replace(/Ukuran\s*:/gi,"<br><b>Ukuran :</b> ")
-      .replace(/Berat\s*:/gi,"<br><b>SN :</b> ")
+      .replace(/Berat\s*:/gi,"<br><b>Berat :</b> ")
       .replace(/Printer\s*:/gi,"<br><b>Printer :</b> ");
       
       card.innerHTML = `
