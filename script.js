@@ -144,6 +144,18 @@ async function loadData(){
         </div>
 
           <div class="info-row">
+            <div class="icon">🗓️</div>
+
+            <div class="info-content">
+              <span>Tahun Perolehan</span>
+
+              <h3>
+                ${asset["Tahun Perolehan"] || "-"}
+              </h3>
+            </div>
+          </div>
+
+          <div class="info-row">
             <div class="icon">📍</div>
 
             <div class="info-content">
