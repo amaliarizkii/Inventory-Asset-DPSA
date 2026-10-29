@@ -43,22 +43,28 @@ function formatNilaiInventory(num) {
 }
 
 // ========================================================
-// 1. GENERATOR URL BERSIH TANPA %2F (MENGGUNAKAN SLASH ASLI)
+// 1. GENERATOR URL DETAIL ASET LOKAL
 // ========================================================
-function getCleanKodeUrl(code) {
+function getCleanKodeUrl(code, owner = "") {
+  //KEMBALIKAN KOMENAN KE PRODUCTION 
+  //Versi lama membuang index.html sehingga file:/// membuka daftar folder,
+  //bukan aplikasi. Dipertahankan di komentar sebagai referensi:
   const origin = window.location.origin;
   const path = window.location.pathname.replace(/\/index\.html$/, '');
   const cleanPath = path.endsWith('/') ? path : `${path}/`;
-  const cleanCode = String(code).trim();
+  return `${origin}${cleanPath}?kode=${String(code).trim()}`;
   
-  // URL Bersih tanpa encodeURIComponent agar garis miring '/' tidak jadi %2F
-  return `${origin}${cleanPath}?kode=${cleanCode}`;
+// 1. GENERATOR URL DETAIL ASET LOKAL - KOMEN KLO MAU KE PRODUCTION
+  //const detailUrl = new URL("index.html", window.location.href);
+  //detailUrl.searchParams.set("kode", String(code).trim());
+  //if (owner) detailUrl.searchParams.set("pemilik", owner);
+  //return detailUrl.toString();
 }
 
 // Generator QR Code
-function getQrCodeUrl(code) {
-  const cleanUrl = getCleanKodeUrl(code);
-  return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(cleanUrl)}&margin=1`;
+function getQrCodeUrl(code, owner = "") {
+  const cleanUrl = getCleanKodeUrl(code, owner);
+  return `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(cleanUrl)}&margin=2`;
 }
 
 // Tombol Detail di Tabel
@@ -230,6 +236,8 @@ function doLogin() {
 function checkDirectPassportParameter() {
   const params = new URLSearchParams(window.location.search);
   const rawKode = params.get('kode') || params.get('code');
+  const ownerParam = String(params.get("pemilik") || "").toLowerCase();
+  const inventoryOwner = ["dpsa", "dpm", "boyke"].includes(ownerParam) ? ownerParam : "";
   
   if (rawKode) {
     let cleanCode = "";
@@ -241,7 +249,9 @@ function checkDirectPassportParameter() {
 
     // Bersihkan address bar URL di browser agar selalu garis miring / asli (tanpa %2F)
     try {
-      const cleanUrl = `${window.location.origin}${window.location.pathname}?kode=${cleanCode}`;
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.set("kode", cleanCode);
+      if (inventoryOwner) cleanUrl.searchParams.set("pemilik", inventoryOwner);
       window.history.replaceState({}, document.title, cleanUrl);
     } catch (e) {}
 
@@ -277,10 +287,10 @@ function checkDirectPassportParameter() {
     } catch (e) {}
 
     if (found) {
-      renderDirectPassport(found, isInv);
+      renderDirectPassport(found, isInv, inventoryOwner);
     } else {
       // 2. Fetch live via JSONP dari Google Sheets
-      fetchLiveItemViaJSONP(cleanTarget, cleanCode);
+      fetchLiveItemViaJSONP(cleanTarget, cleanCode, inventoryOwner);
     }
     return true;
   }
@@ -299,8 +309,22 @@ function isCodeMatch(sourceKode, targetClean) {
   return sStrip === tStrip;
 }
 
-function renderDirectPassport(item, isInv) {
+function renderDirectPassport(item, isInv, inventoryOwner = "") {
   if (!item) return;
+
+  const ownerTitle = document.getElementById("passOwnerTitle");
+  const ownerLogo = document.getElementById("passOwnerLogo");
+  if (ownerTitle) {
+    const owners = [
+      { key: "dpsa", title: "PT DPSA", amount: parsePrice(item.totalDPSA) },
+      { key: "dpm", title: "CV DPM", amount: parsePrice(item.totalDPM) },
+      { key: "boyke", title: "BOYKE DHARMA", amount: parsePrice(item.totalBoyke) }
+    ];
+    const selectedOwner = owners.find(owner => owner.key === inventoryOwner)
+      || owners.reduce((highest, owner) => owner.amount > highest.amount ? owner : highest, owners[0]);
+    ownerTitle.textContent = isInv ? selectedOwner.title : "PT DPSA";
+    if (ownerLogo) ownerLogo.style.display = isInv && selectedOwner.key === "boyke" ? "none" : "";
+  }
 
   const lblKode = document.getElementById("passLblKode");
   const qrKode = document.getElementById("passQrKode");
@@ -314,6 +338,7 @@ function renderDirectPassport(item, isInv) {
   const rowTgl = document.getElementById("passRowTgl");
   const qrTgl = document.getElementById("passQrTgl");
   const rowHarga = document.getElementById("passRowHarga");
+  const lblHarga = rowHarga ? rowHarga.querySelector("p") : null;
   const qrHarga = document.getElementById("passQrHarga");
   const rowLokasi = document.getElementById("passRowLokasi");
   const qrLokasi = document.getElementById("passQrLokasi");
@@ -333,7 +358,25 @@ function renderDirectPassport(item, isInv) {
 
     if (rowMerk) rowMerk.style.display = "none";
     if (rowTgl) rowTgl.style.display = "none";
-    if (rowHarga) rowHarga.style.display = "none";
+    if (rowHarga) rowHarga.style.display = "flex";
+    const ownerPrices = [
+      { key: "dpsa", name: "DPSA", amount: item.totalDPSA },
+      { key: "dpm", name: "DPM", amount: item.totalDPM },
+      { key: "boyke", name: "Boyke Dharma", amount: item.totalBoyke }
+    ];
+    const displayedPrices = inventoryOwner
+      ? ownerPrices.filter(owner => owner.key === inventoryOwner)
+      : ownerPrices.filter(owner => parsePrice(owner.amount) > 0);
+    if (lblHarga) {
+      lblHarga.textContent = inventoryOwner
+        ? `Harga Perolehan ${displayedPrices[0]?.name || inventoryOwner.toUpperCase()}`
+        : "Harga Perolehan";
+    }
+    if (qrHarga) {
+      qrHarga.innerHTML = displayedPrices.length
+        ? displayedPrices.map(owner => `<div>${inventoryOwner ? formatRupiah(owner.amount) : `${owner.name}: ${formatRupiah(owner.amount)}`}</div>`).join("")
+        : "Belum ada alokasi";
+    }
     if (rowLokasi) rowLokasi.style.display = "none";
 
     if (lblKet) lblKet.textContent = "Keterangan (Letak)";
@@ -368,6 +411,7 @@ function renderDirectPassport(item, isInv) {
 
     if (rowHarga) {
       rowHarga.style.display = "flex";
+      if (lblHarga) lblHarga.textContent = "Harga Perolehan";
       if (qrHarga) qrHarga.textContent = formatRupiah(item.hargaPerolehan || 0);
     }
 
@@ -390,7 +434,7 @@ function renderDirectPassport(item, isInv) {
 }
 
 // Fetch live via JSONP dari Google Sheets (Menghindari CORS browser)
-function fetchLiveItemViaJSONP(cleanTarget, originalKode) {
+function fetchLiveItemViaJSONP(cleanTarget, originalKode, inventoryOwner = "") {
   if (typeof CONFIG === 'undefined') return;
 
   // 1. Handler Fix Asset
@@ -417,7 +461,7 @@ function fetchLiveItemViaJSONP(cleanTarget, originalKode) {
     });
 
     if (match) {
-      renderDirectPassport(match, false);
+      renderDirectPassport(match, false, inventoryOwner);
     } else {
       // Jika di Fix Asset tidak ada, cari di Inventory
       const scriptInv = document.createElement("script");
@@ -438,6 +482,9 @@ function fetchLiveItemViaJSONP(cleanTarget, originalKode) {
           kodeBarang: kode,
           namaBarang: c[2]?.v || "-",
           tipe: c[3]?.v || "-",
+          totalDPSA: parsePrice(c[9]?.v),
+          totalDPM: parsePrice(c[10]?.v),
+          totalBoyke: parsePrice(c[11]?.v),
           gambar: c[12]?.v || "",
           keteranganLetak: c[13]?.v || "-"
         };
@@ -445,7 +492,7 @@ function fetchLiveItemViaJSONP(cleanTarget, originalKode) {
     });
 
     if (match) {
-      renderDirectPassport(match, true);
+      renderDirectPassport(match, true, inventoryOwner);
     } else {
       // Fallback jika memang tidak ada sama sekali di kedua sheet
       renderDirectPassport({
@@ -458,7 +505,7 @@ function fetchLiveItemViaJSONP(cleanTarget, originalKode) {
         keterangan: "-",
         gambar: "no image.png",
         linkGambar: "no image.png"
-      }, false);
+      }, false, inventoryOwner);
     }
   };
 
@@ -882,35 +929,11 @@ function switchTab(tabId) {
 }
 
 // Batch Print Barcode 5x5 cm
-// Tentukan warna stiker inventory berdasarkan kolom total harga perolehan.
-function getInventoryStickerOwner(item) {
-  const totalDPSA = parsePrice(item.totalDPSA);
-  const totalDPM = parsePrice(item.totalDPM);
-  const totalBoyke = parsePrice(item.totalBoyke);
-
-  // Pemilik ditentukan dari kolom total harga perolehan yang terisi.
-  // Jika lebih dari satu kolom terisi, prioritas: DPSA, DPM, lalu Pak Boyke.
-  if (totalDPSA > 0) return "dpsa";
-  if (totalDPM > 0) return "dpm";
-  if (totalBoyke > 0) return "boyke";
-  return "dpsa"; // Default biru bila seluruh nilai perolehan kosong/nol.
-}
-
-function getInventoryStickerTitle(item) {
-  const owner = getInventoryStickerOwner(item);
-  const titles = {
-    dpsa: "PT DPSA",
-    dpm: "DPM",
-    boyke: "Boyke Dharma"
-  };
-  return titles[owner] || "PT DPSA";
-}
-
 function openBatchPrintModal(type) {
   currentBatchType = type;
   const isFA = (type === 'fixasset');
   const list = isFA ? calculatedFixAssets : inventoryItems;
-
+  
   const modal = document.getElementById("batchPrintModal");
   const title = document.getElementById("batchPrintTitle");
   const sub = document.getElementById("batchPrintSubtitle");
@@ -919,25 +942,35 @@ function openBatchPrintModal(type) {
   if (!modal || !container) return;
 
   title.textContent = isFA ? "Cetak Barcode Fix Asset" : "Cetak Barcode Inventory";
-  sub.textContent = `Total ${list.length} label stiker baku 5 x 5 cm`;
 
   container.innerHTML = "";
-  list.forEach(item => {
-    const kode = isFA ? item.kodeAktiva : item.kodeBarang;
-    const qrUrl = getQrCodeUrl(kode);
-    const card = document.createElement("div");
-    // Fix Asset tetap berjudul PT DPSA; Inventory mengikuti pemilik berdasarkan total harga perolehan.
-    const owner = isFA ? "dpsa" : getInventoryStickerOwner(item);
-    const ownerClass = `sticker-owner-${owner}`;
-    const stickerTitle = isFA ? "PT DPSA" : getInventoryStickerTitle(item);
-    card.className = `sticker-5x5cm print-card ${ownerClass}`;
+  const stickerItems = list.flatMap(item => {
+    if (isFA) return [{ item, owner: { name: "PT DPSA", key: "dpsa" } }];
 
+    const owners = [
+      { name: "DPSA", key: "dpsa", amount: item.totalDPSA },
+      { name: "DPM", key: "dpm", amount: item.totalDPM },
+      { name: "PAK BOYKE", key: "boyke", amount: item.totalBoyke }
+    ].filter(owner => parsePrice(owner.amount) > 0);
+
+    return (owners.length ? owners : [{ name: "TANPA ALOKASI", key: "unassigned" }])
+      .map(owner => ({ item, owner }));
+  });
+
+  sub.textContent = `Total ${stickerItems.length} label stiker baku 5 x 5 cm`;
+
+  stickerItems.forEach(({ item, owner }) => {
+    const kode = isFA ? item.kodeAktiva : item.kodeBarang;
+    const qrUrl = getQrCodeUrl(kode, isFA || owner.key === "unassigned" ? "" : owner.key);
+    const card = document.createElement("div");
+    card.className = `sticker-5x5cm print-card sticker-owner-${owner.key}`;
+    
     card.innerHTML = `
       <div class="sticker-header">
         <img src="logo dpsa.png" alt="Logo" class="sticker-logo" onerror="this.onerror=null;this.src='no image.png';">
         <div class="sticker-brand">
-          <div class="sticker-title">${stickerTitle}</div>
-          <div class="sticker-subtitle">Asset & Inventory System</div>
+          <div class="sticker-title">${owner.name}</div>
+          <div class="sticker-subtitle">${isFA ? "Asset & Inventory System" : "Inventory"}</div>
         </div>
       </div>
       <div class="sticker-qr-wrapper">
@@ -955,6 +988,7 @@ function openBatchPrintModal(type) {
   setPaperSize('A4');
   if (window.lucide) lucide.createIcons();
 }
+
 function closeBatchPrintModal() {
   const modal = document.getElementById("batchPrintModal");
   if (modal) {
