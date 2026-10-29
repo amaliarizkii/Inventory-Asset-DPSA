@@ -13,9 +13,19 @@ function formatMultiline(str) {
   return String(str).replace(/\n/g, "<br>");
 }
 
+function formatPrice(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(Number(value) || 0);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
 const urlParams = new URLSearchParams(window.location.search);
 const rawTarget = urlParams.get("kode") || urlParams.get("code");
+const ownerParam = String(urlParams.get("pemilik") || "").toLowerCase();
+const inventoryOwner = ["dpsa", "dpm", "boyke"].includes(ownerParam) ? ownerParam : "";
 
   if (!rawTarget) {
     const loader = document.getElementById("barcodeLoader");
@@ -59,6 +69,9 @@ const rawTarget = urlParams.get("kode") || urlParams.get("code");
                 kodeBarang: kode,
                 namaBarang: c[2]?.v || "-",
                 tipe: c[3]?.v || "-",
+                totalDPSA: c[9]?.v || 0,
+                totalDPM: c[10]?.v || 0,
+                totalBoyke: c[11]?.v || 0,
                 gambar: c[12]?.v || "", // Kolom M (Dokumen Gambar)
                 keteranganLetak: c[13]?.v || "-" // Kolom N (Keterangan Letak)
               };
@@ -107,7 +120,7 @@ const rawTarget = urlParams.get("kode") || urlParams.get("code");
   if (loader) loader.style.display = "none";
 
   if (foundItem) {
-    renderCard(foundItem, isInventory);
+    renderCard(foundItem, isInventory, inventoryOwner);
   } else {
     renderCard({
       kodeBarang: decodeURIComponent(rawTarget),
@@ -115,11 +128,11 @@ const rawTarget = urlParams.get("kode") || urlParams.get("code");
       tipe: "-",
       keteranganLetak: "-",
       gambar: "no image.png"
-    }, true);
+    }, true, inventoryOwner);
   }
 });
 
-function renderCard(item, isInv) {
+function renderCard(item, isInv, inventoryOwner = "") {
   if (isInv) {
     // 5 Atribut Paspor Inventory:
     // 1. Kode Barang
@@ -138,7 +151,26 @@ function renderCard(item, isInv) {
     // Sembunyikan atribut khusus Fix Asset
     document.getElementById("rowMerk").style.display = "none";
     document.getElementById("rowTgl").style.display = "none";
-    document.getElementById("rowHarga").style.display = "none";
+    document.getElementById("rowHarga").style.display = "flex";
+    const ownerPrices = [
+      { key: "dpsa", name: "DPSA", amount: Number(item.totalDPSA) || 0 },
+      { key: "dpm", name: "DPM", amount: Number(item.totalDPM) || 0 },
+      { key: "boyke", name: "Pak Boyke", amount: Number(item.totalBoyke) || 0 }
+    ];
+    const selectedOwner = ownerPrices.find(owner => owner.key === inventoryOwner)
+      || ownerPrices.reduce((highest, owner) => owner.amount > highest.amount ? owner : highest, ownerPrices[0]);
+    const ownerTitles = { dpsa: "PT DPSA", dpm: "PT DPM", boyke: "PAK BOYKE" };
+    document.getElementById("barcodeOwnerTitle").textContent = ownerTitles[selectedOwner.key];
+    document.getElementById("barcodeOwnerLogo").style.display = selectedOwner.key === "boyke" ? "none" : "";
+    const displayedPrices = inventoryOwner
+      ? ownerPrices.filter(owner => owner.key === inventoryOwner)
+      : ownerPrices.filter(owner => Number(owner.amount) > 0);
+    document.querySelector("#rowHarga p").textContent = inventoryOwner
+      ? `Harga Perolehan ${displayedPrices[0]?.name || inventoryOwner.toUpperCase()}`
+      : "Harga Perolehan";
+    document.getElementById("qrHarga").innerHTML = displayedPrices.length
+      ? displayedPrices.map(owner => `<div>${inventoryOwner ? formatPrice(owner.amount) : `${owner.name}: ${formatPrice(owner.amount)}`}</div>`).join("")
+      : "Belum ada alokasi";
     document.getElementById("rowLokasi").style.display = "none";
 
     // 4. Keterangan (Letak)
@@ -170,7 +202,8 @@ function renderCard(item, isInv) {
     document.getElementById("qrTgl").textContent = item.tglPerolehan || "-";
 
     document.getElementById("rowHarga").style.display = "flex";
-    document.getElementById("qrHarga").textContent = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(item.hargaPerolehan || 0);
+    document.querySelector("#rowHarga p").textContent = "Harga Perolehan";
+    document.getElementById("qrHarga").textContent = formatPrice(item.hargaPerolehan);
 
     document.getElementById("rowLokasi").style.display = "flex";
     document.getElementById("qrLokasi").textContent = (item.lokasi || "-").toUpperCase();
